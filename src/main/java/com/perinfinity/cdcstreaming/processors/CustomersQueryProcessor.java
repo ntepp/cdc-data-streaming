@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmployeeProcessor implements Processor {
-    Logger logger = LoggerFactory.getLogger(EmployeeProcessor.class);
+public class CustomersQueryProcessor implements Processor {
+    Logger logger = LoggerFactory.getLogger(CustomersQueryProcessor.class);
     @Override
     public void process(Exchange exchange) throws Exception {
         logger.info("Get all customer in db");

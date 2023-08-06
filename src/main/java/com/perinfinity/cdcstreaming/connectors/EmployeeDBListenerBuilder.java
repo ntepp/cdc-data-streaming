@@ -1,7 +1,6 @@
 package com.perinfinity.cdcstreaming.connectors;
 
-import com.perinfinity.cdcstreaming.model.CustomerOffset;
-import com.perinfinity.cdcstreaming.processors.EmployeeProcessor;
+import com.perinfinity.cdcstreaming.processors.CustomersQueryProcessor;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +12,16 @@ public class EmployeeDBListenerBuilder extends RouteBuilder {
     HikariDataSource dataSource;
 
     @Autowired
-    EmployeeProcessor employeeProcessor;
+    CustomersQueryProcessor customersQueryProcessor;
 
     @Override
     public void configure() throws Exception {
         from("timer://listener?period=30000")
-                .process(employeeProcessor)
-                .to("jdbc:dataSource") // jdbc data source
-                .log("Captured datas: ${body}");
+                .process(customersQueryProcessor)
+                .to("jdbc:dataSource?outputType=StreamList") // jdbc data source
+                .log("List of customers: ${body}")
+                .split(body()).streaming()
+                .log("Customer to process: ${body}");
                 //.to("activemq:queue:customers");
     }
 }
